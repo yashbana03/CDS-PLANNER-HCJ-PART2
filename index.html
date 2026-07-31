@@ -381,20 +381,6 @@
         .page-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
         .pdf-tag { background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
 
-        .page-daily-work { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 10px; padding: 15px 20px; margin-bottom: 25px; }
-        .page-daily-work h4 { margin: 0 0 15px 0; color: #b45309; font-size: 0.9rem; text-transform: uppercase;}
-        
-        .ticker-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
-        .ticker-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px dashed #fef3c7; }
-        .ticker-row:last-child { border-bottom: none; }
-        
-        .task-label { flex: 2; font-weight: 600; font-size: 0.85rem; color: #1f2937; }
-        .checkbox-group { flex: 3; display: flex; justify-content: space-between; max-width: 500px; }
-        .ticker-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .ticker-cell span { font-size: 0.65rem; color: #b45309; font-weight: bold; }
-        .ticker-cell .no-task-cross { font-size: 0.85rem; color: #9ca3af; font-weight: bold; height: 16px; line-height: 16px; }
-        .ticker-cell input[type="checkbox"] { width: 16px; height: 16px; accent-color: #b45309; cursor: pointer; }
-
         .tasks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
         .day-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; position: relative; transition: all 0.3s ease; }
         .day-box.sunday { background: #fef2f2; border-color: #fee2e2; }
@@ -553,37 +539,58 @@
         autoScanAndRenderBacklogs();
     }
 
-    const dailyEssentials = [
-        "BOOK READING",
-        "30 MIN CURRENT AFFAIRS REVISION",
-        "KHELGHAR QUIZ",
-        "NEWSPAPER",
-        "DRR",
-        "DIARY WRITING"
+    const scheduleData = [
+        { date: "25 MAY", tasks: ["President + VP + Governor", "January smiling buddha Revision", "Tense", "Idioms & phrases", "Watch root words class"] },
+        { date: "26 MAY", tasks: ["Parliament", "January smiling buddha Revision", "Tense", "S1-S6 practice"] },
+        { date: "27 MAY", tasks: ["Parliament + Parliamentary committees", "Jan.smiling buddha Revision", "Tense based error practice", "S1-S6 practice", "Watch Jan CA class"] },
+        { date: "28 MAY", tasks: ["PM + CM + President", "Previous year error practice", "Parts of speech practice", "PQRS practice", "Idioms & phrases"] },
+        { date: "29 MAY", tasks: ["Cell", "Feb smiling buddha Revision", "Noun", "S1-S2 practice", "Watch BAD class 2"] },
+        { date: "30 MAY", tasks: ["Tissue", "Feb smiling buddha Revision", "Noun practice", "New pattern parts of speech"] },
+        { date: "31 MAY", tasks: ["Polity Revision", "Backlogs", "Watch Jan CA class"] },
+        { date: "1 JUNE", tasks: ["Life processes", "February smiling buddha Revision", "Watch Feb CA class"] },
+        { date: "2 JUNE", tasks: ["Life processes", "March smiling buddha Revision", "Homonyms Revision", "S1-S6 practice"] },
+        { date: "3 JUNE", tasks: ["Revise all polity topics covered so far", "March smiling buddha Revision", "Watch 11 most Asked Homonyms"] },
+        { date: "4 JUNE", tasks: ["State legislature + panchayat + municipalities", "April smiling buddha Revision", "Pronoun", "Practice new pattern POS", "Fill ups practice", "PQRS practice", "Watch march CA class"] },
+        { date: "5 JUNE", tasks: ["Constitutional & non-constitutional bodies", "April smiling buddha Revision", "Verb", "Pronoun practice", "Homonyms Revision", "Watch vocab class", "S1-S2 practice"] },
+        { date: "6 JUNE", tasks: ["Revise cell and tissue", "Solve any previous year english paper", "April smiling buddha Revision"] },
+        { date: "7 JUNE", tasks: ["Revise all Biology Topic covered", "Cloze test practice"] },
+        { date: "8 JUNE", tasks: ["Disease", "January smiling buddha Revision", "Verb"] },
+        { date: "9 JUNE", tasks: ["Plants & Human hormones", "Jan smiling buddha Revision", "Idioms & phrases"] },
+        { date: "10 JUNE", tasks: ["Reproduction", "Jan smiling buddha Revision", "Verb practice", "Fill ups", "Homonyms Revision"] },
+        { date: "11 JUNE", tasks: ["Revise polity topics covered so far", "Feb smiling buddha Revision"] },
+        { date: "12 JUNE", tasks: ["Fundamental Rights", "Feb smiling buddha Revision", "Subject verb Agreement", "Idioms & phrases Revision"] },
+        { date: "13 JUNE", tasks: ["DRSP + FDs", "Feb smiling buddha Revision", "Solve any previous year english question paper"] },
+        { date: "14 JUNE", tasks: ["Revise Biology topics covered so far"] },
+        { date: "15 JUNE", tasks: ["Diversity in living organisms", "Feb smiling buddha Revision", "Discourse marker", "Cloze test practice", "Watch BAD series class 3", "Error practice"] },
+        { date: "16 JUNE", tasks: ["Control & coordination + formed elements + blood", "March smiling buddha Revision", "Question tag", "PQRS practice", "Idioms & phrases Revision"] },
+        { date: "17 JUNE", tasks: ["Heredity & evolution", "March smiling buddha Revision", "Question tag practice", "Discourse marker", "Watch May CA class"] },
+        { date: "18 JUNE", tasks: ["Making of the constitution", "March smiling buddha Revision", "New pattern POS practice", "S1-S6 practice"] },
+        { date: "19 JUNE", tasks: ["Emergency provisions + Amendments & the constitution", "April smiling buddha revision", "Homonyms Revision", "S1-S2 practice"] },
+        { date: "20 JUNE", tasks: ["Subordinates courts + HC + SC", "April smiling buddha revision", "S1-S6 + PQRS practice", "Fill ups practice", "Homonyms revision"] },
+        { date: "21 JUNE", tasks: ["Complete pending tasks"] },
+        { date: "22 JUNE", tasks: ["Revise polity topics covered so far"] },
+        { date: "23 JUNE", tasks: ["Preamble", "April smiling buddha revision", "Grammar based error practice", "Solve previous year POS questions", "Idioms & phrases revision"] },
+        { date: "24 JUNE", tasks: ["Complete Biology Revision", "April smiling buddha revision", "Solve any previous year english question paper", "S1-S6 practice", "Solve previous year S1-S2 question", "Watch vocab class", "Idioms & phrases revision"] },
+        { date: "25 JUNE", tasks: ["Universe, Geology & Geological time scale", "Jan smiling buddha revision", "preposition", "cloze test"] },
+        { date: "26 JUNE", tasks: ["latitude, longitude & interior of the earth", "Jan smiling buddha revision", "preposition", "phrasal verbs", "PQRS practice"] },
+        { date: "27 JUNE", tasks: ["Earthquake and Volcanoes", "Jan smiling buddha revision", "fixed preposition", "preposition based fill ups", "SI-S6 practice"] },
+        { date: "28 JUNE", tasks: ["complete polity Revision"] },
+        { date: "29 JUNE", tasks: ["Geomorphic processes + rocks", "feb smiling buddha revision", "conjunction", "Idioms & phrases Revision", "cloze test", "watch vocab class"] },
+        { date: "30 JUNE", tasks: ["Acids, Base & salts", "feb smiling buddha revision", "conjunction practice", "phrasal verbs", "SI-S6 practice"] },
+        { date: "1 JULY", tasks: ["Metals & non-metals", "feb smiling buddha revision", "New pattern POS practice", "Homonyms Revision", "S1-S6 practice"] },
+        { date: "2 JULY", tasks: ["Carbon & its compounds", "march smiling buddha revision", "Discourse marker", "S1-S2 practice", "Homonyms Revision"] },
+        { date: "3 JULY", tasks: ["oceanic basin + ocean current", "march smiling buddha revision", "Grammar based error practice", "Idioms & phrases"] },
+        { date: "4 JULY", tasks: ["coral reefs & tides", "march smiling buddha revision", "voice", "Narration", "S1-S2 practice"] },
+        { date: "5 JULY", tasks: ["Revise physical Geography covered so far", "solve any previous year english paper"] },
+        { date: "6 JULY", tasks: ["chemical Reaction & equation", "April smiling buddha revision", "voice practice", "Homonyms revision", "S1-S6 practice", "S1-S2 practice", "Idioms & Phrase Revision"] },
+        { date: "7 JULY", tasks: ["Atoms & molecules + revision chemistry topics covered so far", "April smiling buddha revision", "Tense Revision + practice", "fill ups", "PQRS"] },
+        { date: "8 JULY", tasks: ["Structure of Atoms", "April smiling buddha revision", "Discourse marker", "Idioms phrases Revision", "Homonyms Revision"] },
+        { date: "9 JULY", tasks: ["state of matter", "may smiling buddha revision", "Narration practice"] },
+        { date: "10 JULY", tasks: ["earth, Atmosphere, heat Budget, layers of earth's", "may smiling buddha revision", "Articles + Determiner", "S1-S6 practice", "Idioms & Phrases Revision"] },
+        { date: "11 JULY", tasks: ["Winds pressure belt + cyclones + Anticyclone", "may smiling buddha revision", "Articles + Determiner practice new pattern pos", "cloze test"] },
+        { date: "12 JULY", tasks: ["inversion & temp + forms of condensation + clouds + precipitation", "english full mock test"] },
+        { date: "13 JULY", tasks: ["fronts & landforms", "may smiling buddha revision", "Grammar based error practice", "S1-S6 practice", "Homonyms Revision"] }
     ];
-
-const scheduleData = [
-    { date: "25 JULY", tasks: ["English Target: Homonyms + Tense Based Error", "GS Target: India & Its Location + Himalayas", "Smiling Buddha Revision: January Smiling Buddha", "Revision Target: Climatology + Tense"] },
-    { date: "26 JULY", tasks: ["English & GS Target: Sunday (Rest / Backlog)", "Smiling Buddha Revision: January Smiling Buddha", "Revision Target: Climatology + Tense"] },
-    { date: "27 JULY", tasks: ["English Target: Parts of Speech + Vocab", "GS Target: Mountain Passes + Northern Plain", "Smiling Buddha Revision: January Smiling Buddha", "Revision Target: Climatology + Tense"] },
-    { date: "28 JULY", tasks: ["English Target: Correlating Sentence + Fixed Preposition", "GS Target: Peninsular Plateau", "Smiling Buddha Revision: February Smiling Buddha", "Revision Target: Oceanography + Preposition"] },
-    { date: "29 JULY", tasks: ["English Target: Phrasal Verb + Vocab + PQRS", "GS Target: Drainage System", "Smiling Buddha Revision: February Smiling Buddha", "Revision Target: Oceanography + Preposition"] },
-    { date: "30 JULY", tasks: ["English Target: S1–S6 + Preposition Based Fill-ups", "GS Target: Soil", "Smiling Buddha Revision: March Smiling Buddha", "Revision Target: Interior of the Earth + Earthquake + Volcanoes + Voice"] },
-    { date: "31 JULY", tasks: ["English Target: Foreign Words + Active & Passive Voice Practice", "GS Target: Indian Climate", "Smiling Buddha Revision: March Smiling Buddha", "Revision Target: Interior of the Earth + Earthquake + Volcanoes + Voice"] },
-    { date: "1 AUG", tasks: ["English Target: Homonyms + Previous Year Error Practice", "GS Target: Crops", "Smiling Buddha Revision: April Smiling Buddha", "Revision Target: Rocks + Geomorphic Processes + Noun"] },
-    { date: "2 AUG", tasks: ["English & GS Target: Sunday (Rest / Backlog)"] },
-    { date: "3 AUG", tasks: ["English Target: Idioms & Phrases + S1–S2 + Passage", "GS Target: Vegetation of India", "Smiling Buddha Revision: May Smiling Buddha", "Revision Target: Landforms + Pronoun"] },
-    { date: "4 AUG", tasks: ["English Target: Parts of Speech + PQRS + Vocab", "GS Target: Köppen's Climate Classification", "Smiling Buddha Revision: May Smiling Buddha", "Revision Target: Landforms + Pronoun"] },
-    { date: "5 AUG", tasks: ["English Target: Grammar Based Fill-up + Phrasal Verb", "GS Target: Units & Measurements", "Smiling Buddha Revision: June Smiling Buddha", "Revision Target: Preamble + FR + DPSP + FDs + Verb + SVA"] },
-    { date: "6 AUG", tasks: ["English Target: Cloze Test + Vocab + S1–S6", "GS Target: Force, Work, Energy & Power", "Smiling Buddha Revision: June Smiling Buddha", "Revision Target: Preamble + FR + DPSP + FDs + Verb + SVA"] },
-    { date: "7 AUG", tasks: ["English Target: Idioms & Phrases + Passage Practice", "GS Target: Optics", "Smiling Buddha Revision: April Smiling Buddha (Revision)", "Revision Target: President, VP, PM, CM, Governor + Adverb"] },
-    { date: "8 AUG", tasks: ["English Target: Foreign Words + Error Practice", "GS Target: Sound", "Smiling Buddha Revision: April Smiling Buddha (Revision)", "Revision Target: President, VP, PM, CM, Governor + Adverb"] },
-    { date: "9 AUG", tasks: ["English & GS Target: Sunday (Rest / Backlog)"] },
-    { date: "10 AUG", tasks: ["English Target: Homonyms + S1–S2 + Vocab", "GS Target: Current Electricity", "Smiling Buddha Revision: May Smiling Buddha (Revision)", "Revision Target: Parliament + Adjective"] },
-    { date: "11 AUG", tasks: ["English Target: Preposition + Determiner Based Fill-up + S1–S6", "GS Target: Magnetism", "Smiling Buddha Revision: May Smiling Buddha (Revision)", "Revision Target: Parliament + Adjective"] },
-    { date: "12 AUG", tasks: ["English Target: Cloze Test + Idioms & Phrases + PQRS", "GS Target: Motion", "Smiling Buddha Revision: June Smiling Buddha (Revision)", "Revision Target: Supreme Court + High Court + Question Tag"] },
-    { date: "13 AUG", tasks: ["English Target: Parts of Speech + Foreign Words + Vocab", "GS Target: Gravitation", "Smiling Buddha Revision: June Smiling Buddha (Revision)", "Revision Target: Constitutional & Non-Constitutional Bodies + Conjunction"] }
-];
 
     // 🧠 SMART REAL-TIME CALENDAR CALCULATION MODULE (2026 BASED)
     function checkIfSundayRealCalendar(dateStr) {
@@ -643,7 +650,6 @@ const scheduleData = [
     for (let i = 0; i < scheduleData.length; i += itemsPerGroup) {
         const currentGroup = scheduleData.slice(i, i + itemsPerGroup);
         const groupIndex = Math.floor(i / itemsPerGroup) + 1;
-        const startDayCount = i + 1;
 
         const pageBlock = document.createElement('div');
         pageBlock.className = 'pdf-page-block';
@@ -665,304 +671,43 @@ const scheduleData = [
             </div>
         `;
 
-        let dailyWorkHtml = `
-            <div class="page-daily-work">
-                <h4>☑ DAILY WORK (Continuous Tracking Columns)</h4>
-                <div class="ticker-table">
-        `;
-
-        dailyEssentials.forEach((essential, essentialIdx) => {
-            dailyWorkHtml += `
-                <div class="ticker-row">
-                    <div class="task-label">⚡ ${essential}</div>
-                    <div class="checkbox-group">
-            `;
-            for (let t = 0; t < 8; t++) {
-                const absoluteDay = startDayCount + t;
-                if(absoluteDay <= scheduleData.length) {
-                    const dayData = scheduleData[absoluteDay - 1];
-                    const isSunday = dayData && dayData.isSunday === true;
-                    const isKhelgharOrDrr = (essential === "KHELGHAR QUIZ" || essential === "DRR");
-                    
-                    dailyWorkHtml += `<div class="ticker-cell"><span>D${absoluteDay}</span>`;
-                    
-                    if (isSunday && isKhelgharOrDrr) {
-                        dailyWorkHtml += `<span class="no-task-cross">—</span>`;
-                    } else {
-                        const storageKey = `daily_g${groupIndex}_e${essentialIdx}_d${absoluteDay}`;
-                        const isChecked = localStorage.getItem(storageKey) === 'true';
-                        dailyWorkHtml += `
-                            <input type="checkbox" class="sync-checkbox daily-work-cb" data-block="block-${groupIndex}" data-key="${storageKey}" ${isChecked ? 'checked' : ''}>
-                        `;
-                    }
-                    dailyWorkHtml += `</div>`;
-                }
-            }
-            dailyWorkHtml += `</div></div>`;
-        });
-        dailyWorkHtml += `</div></div>`;
-
-        let gridHtml = `<div class="tasks-grid">`;
-        currentGroup.forEach((day, dayIndex) => {
-            const absoluteDayNumber = startDayCount + dayIndex;
-            const safeDateStr = day.date.replace(/\s+/g, '_');
-            const isToday = (day.date.trim().toUpperCase() === todayFormatted.trim().toUpperCase());
+        let tasksGridHtml = `<div class="tasks-grid">`;
+        currentGroup.forEach((dayData) => {
+            const isSunday = dayData.isSunday;
+            const isToday = dayData.date.trim().toUpperCase() === todayFormatted.trim().toUpperCase();
             
-            if (isToday) {
-                detectedBlockId = `block-${groupIndex}`;
-                todaysTasksArray = day.tasks;
-                todaysDateStringSafe = safeDateStr;
-            }
-
-            const isSundayClass = day.isSunday ? 'sunday' : '';
-            const isTodayClass = isToday ? 'today-highlight' : '';
-            const sundayTagHtml = day.isSunday ? '<span class="sunday-tag">SUNDAY</span>' : '';
-            const todayBadgeHtml = isToday ? '<span class="today-badge">TODAY</span>' : '';
-
-            gridHtml += `
-                <div class="day-box ${isSundayClass} ${isTodayClass}">
-                    <h5>[D${absoluteDayNumber}] ${day.date} ${sundayTagHtml} ${todayBadgeHtml}</h5>
+            tasksGridHtml += `
+                <div class="day-box ${isSunday ? 'sunday' : ''} ${isToday ? 'today-highlight' : ''}">
+                    <h5>
+                        <span>${dayData.date}</span>
+                        ${isToday ? '<span class="today-badge">TODAY</span>' : ''}
+                        ${isSunday ? '<span class="sunday-tag">SUNDAY</span>' : ''}
+                    </h5>
                     <ul class="task-list">
             `;
 
-            day.tasks.forEach((task, taskIdx) => {
-                const storageKey = `task_${safeDateStr}_${taskIdx}`;
-                const isChecked = localStorage.getItem(storageKey) === 'true';
-                gridHtml += `
-                    <li class="task-item ${isChecked ? 'completed' : ''}" id="main-item-${safeDateStr}-${taskIdx}">
-                        <input type="checkbox" class="sync-checkbox date-task-cb" data-block="block-${groupIndex}" data-main-id="${safeDateStr}-${taskIdx}" data-key="${storageKey}" ${isChecked ? 'checked' : ''}>
-                        <span class="task-text">${task}</span>
+            dayData.tasks.forEach((task, tIdx) => {
+                const taskId = `task_${dayData.date.replace(/\s+/g, '_')}_${tIdx}`;
+                tasksGridHtml += `
+                    <li class="task-item">
+                        <input type="checkbox" id="${taskId}" onchange="toggleTask('${taskId}')">
+                        <label for="${taskId}" class="task-text">${task}</label>
                     </li>
                 `;
             });
-            gridHtml += `</ul></div>`;
-        });
-        gridHtml += `</div>`;
 
-        pageBlock.innerHTML = pageHeaderHtml + dailyWorkHtml + gridHtml;
+            tasksGridHtml += `
+                    </ul>
+                </div>
+            `;
+        });
+        tasksGridHtml += `</div>`;
+
+        pageBlock.innerHTML = pageHeaderHtml + tasksGridHtml;
         container.appendChild(pageBlock);
     }
 
-    const dashboardContainer = document.getElementById('todays-task-container');
-    if (todaysTasksArray.length > 0) {
-        todaysTasksArray.forEach((task, taskIdx) => {
-            const storageKey = `task_${todaysDateStringSafe}_${taskIdx}`;
-            const isChecked = localStorage.getItem(storageKey) === 'true';
-            
-            dashboardContainer.innerHTML += `
-                <li class="todays-task-item ${isChecked ? 'completed' : ''}" id="dash-item-${todaysDateStringSafe}-${taskIdx}">
-                    <input type="checkbox" class="sync-checkbox date-task-cb" data-block="${detectedBlockId}" data-dash-id="${todaysDateStringSafe}-${taskIdx}" data-key="${storageKey}" ${isChecked ? 'checked' : ''}>
-                    <span class="task-text">${task}</span>
-                </li>
-            `;
-        });
-    } else {
-        dashboardContainer.innerHTML = `<p class="no-tasks-msg">🎉 No tasks scheduled for today.</p>`;
-    }
-
-    function updateBlockProgressBar(blockId) {
-        const blockElement = document.getElementById(blockId);
-        if (!blockElement) return;
-
-        const allDateCheckboxes = blockElement.querySelectorAll('.sync-checkbox.date-task-cb');
-        let totalCount = allDateCheckboxes.length;
-        let checkedCount = 0;
-
-        allDateCheckboxes.forEach(cb => {
-            if (cb.checked) checkedCount++;
-        });
-
-        const percentage = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
-        
-        const textElement = document.getElementById(`progress-percent-${blockId}`);
-        const fillElement = document.getElementById(`progress-fill-${blockId}`);
-        
-        if (textElement) textElement.innerText = `${percentage}%`;
-        if (fillElement) fillElement.style.width = `${percentage}%`;
-    }
-
-    function calculateAllBlockProgressBars() {
-        for (let b = 1; b <= totalBlocks; b++) {
-            updateBlockProgressBar(`block-${b}`);
-        }
-    }
-
-    function autoScanAndRenderBacklogs() {
-        const backlogContainer = document.getElementById('backlog-list-container');
-        backlogContainer.innerHTML = '';
-        
-        let limitIndex = todayIndexInSchedule !== -1 ? todayIndexInSchedule : scheduleData.length;
-        let backlogFoundCount = 0;
-
-        for (let i = 0; i < limitIndex; i++) {
-            const day = scheduleData[i];
-            const safeDateStr = day.date.replace(/\s+/g, '_');
-            
-            day.tasks.forEach((task, taskIdx) => {
-                const storageKey = `task_${safeDateStr}_${taskIdx}`;
-                const isChecked = localStorage.getItem(storageKey) === 'true';
-                
-                if (!isChecked) {
-                    backlogFoundCount++;
-                    backlogContainer.innerHTML += `
-                        <li class="backlog-item">
-                            <span>📅 <strong>${day.date}:</strong> ${task}</span>
-                        </li>
-                    `;
-                }
-            });
-        }
-
-        if (backlogFoundCount === 0) {
-            backlogContainer.innerHTML = `<li class="backlog-item" style="background:#f0fdf4; border-left-color:var(--success); color:#065f46;">🎉 Outstanding! Koi purana backlog nahi hai.</li>`;
-        }
-    }
-
-    function showBlock(blockId) {
-        document.querySelectorAll('.pdf-page-block').forEach(block => { block.style.display = 'none'; });
-        const selectedBlock = document.getElementById(blockId);
-        if(selectedBlock) { selectedBlock.style.display = 'block'; }
-        selectMenu.value = blockId;
-        
-        const currentNum = parseInt(blockId.split('-')[1]);
-        prevBtn.disabled = (currentNum === 1);
-        nextBtn.disabled = (currentNum === totalBlocks);
-        
-        updateBlockProgressBar(blockId);
-    }
-
-    selectMenu.addEventListener('change', function() { showBlock(this.value); });
-    prevBtn.addEventListener('click', () => {
-        const currentBlock = selectMenu.value;
-        const currentNum = parseInt(currentBlock.split('-')[1]);
-        if (currentNum > 1) { showBlock(`block-${currentNum - 1}`); }
-    });
-    nextBtn.addEventListener('click', () => {
-        const currentBlock = selectMenu.value;
-        const currentNum = parseInt(currentBlock.split('-')[1]);
-        if (currentNum < totalBlocks) { showBlock(`block-${currentNum + 1}`); }
-    });
-
-    async function loadFromCloud() {
-        if (APP_MODE !== 'cloud' || !SCRIPT_URL) return;
-        document.getElementById('sync-status-text').innerText = "Real-time updates fetch ho rha hai...";
-        try {
-            const response = await fetch(SCRIPT_URL);
-            const cloudData = await response.json();
-            
-            Object.keys(cloudData).forEach(key => {
-                localStorage.setItem(key, cloudData[key]);
-                
-                if(key === 'workspace_sticky_notes') {
-                    stickyTextArea.value = cloudData[key];
-                    return;
-                }
-
-                const isChecked = (cloudData[key] === 'true' || cloudData[key] === true);
-                
-                document.querySelectorAll(`[data-key="${key}"]`).forEach(checkbox => {
-                    checkbox.checked = isChecked;
-                    const item = checkbox.parentElement;
-                    if(isChecked) item.classList.add('completed'); else item.classList.remove('completed');
-                });
-                
-                const dashId = checkboxAttributeExtractor(key);
-                if (dashId) { uiMirrorSync(dashId, isChecked); }
-            });
-            document.getElementById('sync-dot').className = "status-dot active";
-            document.getElementById('sync-status-text').innerText = "🟢 Live Sync Connected!";
-            calculateAllBlockProgressBars();
-            autoScanAndRenderBacklogs(); 
-        } catch (e) {
-            document.getElementById('sync-status-text').innerText = "🟡 Connection Failed (Using local storage)";
-            console.log("Sync Error: ", e);
-            loadWorkspaceDataLocally();
-        }
-    }
-
-    function checkboxAttributeExtractor(key) {
-        if (key.startsWith('task_')) return key.replace('task_', '');
-        return null;
-    }
-
-    function uiMirrorSync(id, isChecked) {
-        const itemDash = document.getElementById(`dash-item-${id}`);
-        const itemMain = document.getElementById(`main-item-${id}`);
-        if(isChecked) {
-            if(itemDash) itemDash.classList.add('completed');
-            if(itemMain) itemMain.classList.add('completed');
-        } else {
-            if(itemDash) itemDash.classList.remove('completed');
-            if(itemMain) itemMain.classList.remove('completed');
-        }
-    }
-
-    async function saveToCloud(key, value) {
-        if (APP_MODE !== 'cloud' || !SCRIPT_URL) return;
-        try {
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ key: key, value: value })
-            });
-        } catch (e) { console.log("Cloud Save Error:", e); }
-    }
-
-    document.querySelectorAll('.sync-checkbox').forEach(checkbox => {
-        checkbox.addEventListener('change', function() {
-            const key = this.getAttribute('data-key');
-            const isChecked = this.checked;
-            const targetBlockId = this.getAttribute('data-block');
-            
-            if(key) {
-                localStorage.setItem(key, isChecked);
-                if (APP_MODE === 'cloud') {
-                    saveToCloud(key, isChecked);
-                }
-            }
-
-            const dashId = this.getAttribute('data-dash-id');
-            if (dashId) {
-                const mainCheckbox = document.querySelector(`[data-main-id="${dashId}"]`);
-                if (mainCheckbox) mainCheckbox.checked = isChecked;
-                uiMirrorSync(dashId, isChecked);
-            }
-
-            const mainId = this.getAttribute('data-main-id');
-            if (mainId) {
-                const dashCheckbox = document.querySelector(`[data-dash-id="${mainId}"]`);
-                if (dashCheckbox) dashCheckbox.checked = isChecked;
-                uiMirrorSync(mainId, isChecked);
-            }
-            
-            if(!dashId && !mainId) {
-                const listItem = this.parentElement;
-                if (listItem.classList.contains('task-item') || listItem.classList.contains('ticker-cell')) {
-                    if (isChecked) listItem.classList.add('completed');
-                    else listItem.classList.remove('completed');
-                }
-            }
-
-            if(targetBlockId) {
-                updateBlockProgressBar(targetBlockId);
-            } else if (detectedBlockId) {
-                updateBlockProgressBar(detectedBlockId);
-            }
-
-            autoScanAndRenderBacklogs();
-        });
-    });
-
-    window.addEventListener('DOMContentLoaded', () => {
-        initModeSystem();
-        showBlock(detectedBlockId);
-        calculateAllBlockProgressBars();
-        if(APP_MODE === 'offline' || !SCRIPT_URL) {
-            loadWorkspaceDataLocally();
-        }
-    });
+    initModeSystem();
 </script>
-
 </body>
-</html
+</html>
