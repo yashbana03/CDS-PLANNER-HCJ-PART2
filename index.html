@@ -127,17 +127,6 @@
             flex-direction: column;
             gap: 6px;
         }
-        .backlog-item {
-            background: #fef2f2;
-            padding: 8px 10px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 3px solid #dc2626;
-            line-height: 1.3;
-        }
 
         /* ☁️ HYBRID MODE STATUS BAR */
         .cloud-status-bar {
@@ -281,7 +270,6 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .nav-btn:hover { background-color: #1d4ed8; }
-        .nav-btn:disabled { background-color: #9ca3af; cursor: not-allowed; opacity: 0.6; box-shadow: none; }
 
         /* Left Side Positioned Dashboard Box */
         .todays-dashboard-box {
@@ -329,7 +317,6 @@
             accent-color: var(--success);
             cursor: pointer;
         }
-        .no-tasks-msg { color: #065f46; font-weight: 600; font-style: italic; font-size: 0.9rem; }
 
         /* 📊 PROGRESS BAR INTEGRATION VISUALS */
         .block-progress-wrapper {
@@ -470,6 +457,7 @@
 <script>
     let APP_MODE = localStorage.getItem('planner_app_mode') || ''; 
     let SCRIPT_URL = localStorage.getItem('google_sheet_sync_url') || '';
+    let userState = {};
 
     function initModeSystem() {
         if (!APP_MODE) {
@@ -492,7 +480,7 @@
     }
 
     function askForNewLink() {
-        let url = prompt("https://script.google.com/macros/s/AKfycbzFsThJMnPB8MDSETp4TU9pYToBGQYzz-WdDIqjgfP3bzHINkqVMq_EyjGMTQk2-DLHSw/exec");
+        let url = prompt("Google Apps Script Executable Web App URL Daalein:");
         if (url) {
             localStorage.setItem('google_sheet_sync_url', url.trim());
             SCRIPT_URL = url.trim();
@@ -536,7 +524,176 @@
 
     function loadWorkspaceDataLocally() {
         stickyTextArea.value = localStorage.getItem('workspace_sticky_notes') || '';
+        
+        // Load checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+            const saved = localStorage.getItem(cb.id);
+            if (saved === 'true') {
+                cb.checked = true;
+                cb.closest('.task-item')?.classList.add('completed');
+            }
+        });
+
+        renderTodaysFocus();
         autoScanAndRenderBacklogs();
+        updateAllBlockProgressBars();
+    }
+
+    function toggleTask(id) {
+        const cb = document.getElementById(id);
+        if(!cb) return;
+        
+        const isChecked = cb.checked;
+        if(isChecked) {
+            cb.closest('.task-item')?.classList.add('completed');
+        } else {
+            cb.closest('.task-item')?.classList.remove('completed');
+        }
+
+        localStorage.setItem(id, isChecked);
+
+        // Sync with Todays Dashboard Checkboxes if same task
+        const mirrorCb = document.getElementById('mirror_' + id);
+        if (mirrorCb) {
+            mirrorCb.checked = isChecked;
+        }
+
+        if(APP_MODE === 'cloud' && SCRIPT_URL) {
+            saveToCloud(id, isChecked ? 'true' : 'false');
+        }
+
+        updateAllBlockProgressBars();
+        autoScanAndRenderBacklogs();
+    }
+
+    function toggleMirrorTask(id) {
+        const mirrorCb = document.getElementById('mirror_' + id);
+        const originalCb = document.getElementById(id);
+        if (originalCb && mirrorCb) {
+            originalCb.checked = mirrorCb.checked;
+            toggleTask(id);
+        }
+    }
+
+    function updateAllBlockProgressBars() {
+        for(let b = 1; b <= totalBlocks; b++) {
+            const blockEl = document.getElementById(`block-${b}`);
+            if(!blockEl) continue;
+            
+            const cbs = blockEl.querySelectorAll('.task-list input[type="checkbox"]');
+            let total = cbs.length;
+            let checkedCount = 0;
+            cbs.forEach(cb => { if(cb.checked) checkedCount++; });
+
+            const percentage = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
+            
+            const fillEl = document.getElementById(`progress-fill-block-${b}`);
+            const textEl = document.getElementById(`progress-percent-block-${b}`);
+            if(fillEl) fillEl.style.width = percentage + '%';
+            if(textEl) textEl.innerText = percentage + '%';
+        }
+    }
+
+    function autoScanAndRenderBacklogs() {
+        const backlogContainer = document.getElementById('backlog-list-container');
+        if(!backlogContainer) return;
+        backlogContainer.innerHTML = '';
+
+        let count = 0;
+
+        scheduleData.forEach((dayData, idx) => {
+            if (todayIndexInSchedule !== -1 && idx < todayIndexInSchedule) {
+                dayData.tasks.forEach((task, tIdx) => {
+                    const taskId = `task_${dayData.date.replace(/\s+/g, '_')}_${tIdx}`;
+                    const isDone = localStorage.getItem(taskId) === 'true';
+
+                    if(!isDone) {
+                        count++;
+                        const li = document.createElement('li');
+                        li.style.cssText = "background: #fef2f2; padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #dc2626; line-height: 1.3;";
+                        li.innerHTML = `
+                            <div>
+                                <strong style="color: #dc2626; font-size: 0.75rem;">[${dayData.date}]</strong><br>
+                                <span>${task}</span>
+                            </div>
+                        `;
+                        backlogContainer.appendChild(li);
+                    }
+                });
+            }
+        });
+
+        if(count === 0) {
+            backlogContainer.innerHTML = `<li style="color: #10b981; font-weight: 600; font-size: 0.85rem; text-align: center; padding: 10px;">🎉 Shabash! Koi Backlog nahi hai!</li>`;
+        }
+    }
+
+    function renderTodaysFocus() {
+        const container = document.getElementById('todays-task-container');
+        if(!container) return;
+        container.innerHTML = '';
+
+        if(todayIndexInSchedule !== -1) {
+            const todayData = scheduleData[todayIndexInSchedule];
+            todayData.tasks.forEach((task, tIdx) => {
+                const taskId = `task_${todayData.date.replace(/\s+/g, '_')}_${tIdx}`;
+                const isChecked = localStorage.getItem(taskId) === 'true';
+
+                const li = document.createElement('li');
+                li.className = 'todays-task-item';
+                li.innerHTML = `
+                    <input type="checkbox" id="mirror_${taskId}" ${isChecked ? 'checked' : ''} onchange="toggleMirrorTask('${taskId}')">
+                    <span>${task}</span>
+                `;
+                container.appendChild(li);
+            });
+        } else {
+            container.innerHTML = `<li style="color: #6b7280; font-style: italic; font-size: 0.85rem;">Aaj ke liye schedule me koi specific tasks nahi hain.</li>`;
+        }
+    }
+
+    function saveToCloud(key, value) {
+        if(!SCRIPT_URL) return;
+        document.getElementById('sync-dot').className = "status-dot active";
+        document.getElementById('sync-status-text').innerText = "Syncing with Cloud...";
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: key, value: value })
+        }).then(() => {
+            setTimeout(() => {
+                document.getElementById('sync-dot').className = "status-dot active";
+                document.getElementById('sync-status-text').innerText = "☁️ Cloud Synced";
+            }, 500);
+        }).catch(err => {
+            document.getElementById('sync-dot').className = "status-dot offline-dot";
+            document.getElementById('sync-status-text').innerText = "⚠️ Sync Failed";
+        });
+    }
+
+    function loadFromCloud() {
+        if(!SCRIPT_URL) return;
+        document.getElementById('sync-status-text').innerText = "Loading from Cloud...";
+
+        fetch(SCRIPT_URL)
+            .then(res => res.json())
+            .then(data => {
+                userState = data || {};
+                Object.keys(userState).forEach(key => {
+                    localStorage.setItem(key, userState[key]);
+                });
+                document.getElementById('sync-dot').className = "status-dot active";
+                document.getElementById('sync-status-text').innerText = "☁️ Connected to Cloud";
+                loadWorkspaceDataLocally();
+            })
+            .catch(() => {
+                document.getElementById('sync-dot').className = "status-dot offline-dot";
+                document.getElementById('sync-status-text').innerText = "⚠️ Offline Mode (Cloud Error)";
+                loadWorkspaceDataLocally();
+            });
     }
 
     const scheduleData = [
@@ -592,9 +749,8 @@
         { date: "13 JULY", tasks: ["fronts & landforms", "may smiling buddha revision", "Grammar based error practice", "S1-S6 practice", "Homonyms Revision"] }
     ];
 
-    // 🧠 SMART REAL-TIME CALENDAR CALCULATION MODULE (2026 BASED)
     function checkIfSundayRealCalendar(dateStr) {
-        const monthsMap = { "MAY": 4, "JUNE": 5, "JULY": 6 }; // 0-indexed months
+        const monthsMap = { "MAY": 4, "JUNE": 5, "JULY": 6 };
         const parts = dateStr.trim().toUpperCase().split(" ");
         if (parts.length < 2) return false;
         
@@ -602,13 +758,10 @@
         const monthIndex = monthsMap[parts[1]];
         
         if (isNaN(dayNum) || monthIndex === undefined) return false;
-        
-        // Year sets to 2026 based on calendar timeline
         const targetDate = new Date(2026, monthIndex, dayNum);
-        return targetDate.getDay() === 0; // 0 means Sunday in JS Engine
+        return targetDate.getDay() === 0;
     }
 
-    // Assign dynamically detected Sunday properties
     scheduleData.forEach(day => {
         day.isSunday = checkIfSundayRealCalendar(day.date);
     });
@@ -621,9 +774,6 @@
 
     document.getElementById('todays-dashboard-title').innerHTML = `🎯 TODAY'S FOCUS (${todayFormatted})`;
 
-    let detectedBlockId = "block-1";
-    let todaysTasksArray = [];
-    let todaysDateStringSafe = "";
     let todayIndexInSchedule = -1;
 
     scheduleData.forEach((day, index) => {
@@ -646,6 +796,29 @@
         option.textContent = `Block Group ${b} (Day ${(b-1)*8 + 1} to ${Math.min(b*8, scheduleData.length)})`;
         selectMenu.appendChild(option);
     }
+
+    function showBlock(blockId) {
+        document.querySelectorAll('.pdf-page-block').forEach(b => b.style.display = 'none');
+        const activeBlock = document.getElementById(blockId);
+        if(activeBlock) activeBlock.style.display = 'block';
+        
+        const currentNum = parseInt(blockId.replace('block-', ''));
+        prevBtn.disabled = (currentNum === 1);
+        nextBtn.disabled = (currentNum === totalBlocks);
+        selectMenu.value = blockId;
+    }
+
+    selectMenu.addEventListener('change', (e) => showBlock(e.target.value));
+    
+    prevBtn.addEventListener('click', () => {
+        const current = parseInt(selectMenu.value.replace('block-', ''));
+        if(current > 1) showBlock(`block-${current - 1}`);
+    });
+
+    nextBtn.addEventListener('click', () => {
+        const current = parseInt(selectMenu.value.replace('block-', ''));
+        if(current < totalBlocks) showBlock(`block-${current + 1}`);
+    });
 
     for (let i = 0; i < scheduleData.length; i += itemsPerGroup) {
         const currentGroup = scheduleData.slice(i, i + itemsPerGroup);
@@ -706,6 +879,13 @@
         pageBlock.innerHTML = pageHeaderHtml + tasksGridHtml;
         container.appendChild(pageBlock);
     }
+
+    // Auto navigate to today's block
+    let detectedBlockIndex = 1;
+    if (todayIndexInSchedule !== -1) {
+        detectedBlockIndex = Math.floor(todayIndexInSchedule / itemsPerGroup) + 1;
+    }
+    showBlock(`block-${detectedBlockIndex}`);
 
     initModeSystem();
 </script>
