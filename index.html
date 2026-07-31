@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDS Journey Planner - Prepometer Edition</title>
+    <title>CDS Journey Planner - Gamified Hybrid Edition</title>
     <style>
         :root {
             --primary: #1e3a8a;
             --primary-light: #eff6ff;
             --accent: #f59e0b;
             --text: #1f2937;
-            --bg: #f3f4f6;
+            --bg: #e5e7eb;
             --card-bg: #ffffff;
             --border: #d1d5db;
             --success: #10b981;
-            --danger: #dc2626;
         }
-
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
@@ -74,16 +68,16 @@
             text-align: center;
             background: linear-gradient(135deg, #1e3a8a, #3b82f6);
             color: white;
-            padding: 18px 15px;
+            padding: 15px;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
         header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 0.5px; }
         header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.85rem; }
         
-        /* 📝 WORKSPACE CARDS */
+        /* 📝 SIDEBAR WORKSPACE CARDS */
         .workspace-card {
-            background: var(--card-bg);
+            background: #ffffff;
             border: 2px solid var(--primary);
             border-radius: 12px;
             padding: 15px;
@@ -93,7 +87,7 @@
             gap: 10px;
         }
         .workspace-card.backlog-border {
-            border-color: var(--danger);
+            border-color: #dc2626;
         }
         .workspace-title {
             font-weight: bold;
@@ -104,7 +98,7 @@
             gap: 6px;
         }
         .workspace-card.backlog-border .workspace-title {
-            color: var(--danger);
+            color: #dc2626;
         }
         .sticky-textarea {
             width: 100%;
@@ -113,8 +107,9 @@
             border-radius: 8px;
             padding: 10px;
             font-family: inherit;
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             resize: none;
+            box-sizing: border-box;
             background: #fffdeb;
             color: #374151;
         }
@@ -126,24 +121,112 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 450px;
+            max-height: 350px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
         }
         .backlog-item {
             background: #fef2f2;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-radius: 6px;
             font-size: 0.85rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-left: 4px solid var(--danger);
-            line-height: 1.35;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 3px solid #dc2626;
+            line-height: 1.3;
         }
+
+        /* ☁️ HYBRID MODE STATUS BAR */
+        .cloud-status-bar {
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.active {
+            background-color: var(--success);
+            animation: pulse 1.5s infinite;
+        }
+        .status-dot.offline-dot {
+            background-color: var(--accent);
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+        .action-btns-container {
+            display: flex;
+            gap: 8px;
+        }
+        .reset-url-btn {
+            background: #f3f4f6;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .reset-url-btn:hover { background: #e5e7eb; }
+
+        /* 📊 MODE SELECTION MODAL */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10000;
+        }
+        .modal-box {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-box h3 { margin-top: 0; color: var(--primary); font-size: 1.4rem; }
+        .modal-box p { color: #4b5563; font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px; }
+        .modal-btns { display: flex; flex-direction: column; gap: 10px; }
+        .mode-btn {
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .mode-btn:active { transform: scale(0.98); }
+        .btn-cloud { background: var(--primary); color: white; }
+        .btn-cloud:hover { background: #1d4ed8; }
+        .btn-offline { background: #f3f4f6; color: var(--text); border: 2px solid var(--border); }
+        .btn-offline:hover { background: #e5e7eb; }
 
         .selector-box {
             background: var(--card-bg);
@@ -154,14 +237,14 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
         .selector-controls {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             width: 100%;
             flex-wrap: wrap;
         }
@@ -179,42 +262,44 @@
             cursor: pointer;
             font-weight: 600;
             color: var(--text);
-            background-color: white;
         }
 
-        .nav-btn-container { display: flex; gap: 12px; }
+        .nav-btn-container { display: flex; gap: 15px; margin-top: 5px; }
         .nav-btn {
             background-color: var(--primary);
             color: white;
             border: none;
             padding: 8px 16px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .nav-btn:hover { background-color: #1d4ed8; }
         .nav-btn:disabled { background-color: #9ca3af; cursor: not-allowed; opacity: 0.6; box-shadow: none; }
 
-        /* Left Side Focus Dashboard */
+        /* Left Side Positioned Dashboard Box */
         .todays-dashboard-box {
             background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-            border: 2.5px solid var(--success);
-            border-radius: 12px;
+            border: 3px solid var(--success);
+            border-radius: 16px;
             padding: 15px;
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.1);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.15);
         }
         .todays-dashboard-box h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 12px 0;
             color: #065f46;
-            font-size: 1rem;
+            font-size: 1.05rem;
             display: flex;
             align-items: center;
             gap: 6px;
             border-bottom: 2px solid #a7f3d0;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
         }
         .todays-task-list {
             list-style: none;
@@ -222,18 +307,18 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
         .todays-task-item {
             background: white;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border-left: 4px solid var(--success);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border-left: 5px solid var(--success);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             display: flex;
             align-items: flex-start;
             font-weight: 500;
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             line-height: 1.3;
         }
         .todays-task-item input[type="checkbox"] {
@@ -244,11 +329,11 @@
             accent-color: var(--success);
             cursor: pointer;
         }
-        .no-tasks-msg { color: #065f46; font-weight: 600; font-style: italic; font-size: 0.85rem; }
+        .no-tasks-msg { color: #065f46; font-weight: 600; font-style: italic; font-size: 0.9rem; }
 
-        /* Progress Bar */
+        /* 📊 PROGRESS BAR INTEGRATION VISUALS */
         .block-progress-wrapper {
-            background: #f8fafc;
+            background: #f3f4f6;
             border-radius: 10px;
             padding: 12px 15px;
             margin-bottom: 20px;
@@ -260,13 +345,13 @@
             font-weight: bold;
             font-size: 0.9rem;
             color: var(--primary);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .progress-outer-bar {
             width: 100%;
-            height: 14px;
-            background: #e2e8f0;
-            border-radius: 7px;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 6px;
             overflow: hidden;
             box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
         }
@@ -274,7 +359,7 @@
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, #3b82f6, #10b981);
-            border-radius: 7px;
+            border-radius: 6px;
             transition: width 0.4s ease;
         }
 
@@ -296,12 +381,11 @@
         .page-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); }
         .pdf-tag { background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; }
 
-        /* Continuous Tracking Table */
-        .page-daily-work { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 10px; padding: 15px; margin-bottom: 25px; }
-        .page-daily-work h4 { margin: 0 0 12px 0; color: #b45309; font-size: 0.9rem; text-transform: uppercase;}
+        .page-daily-work { background: #fffbeb; border: 1px solid #fef3c7; border-radius: 10px; padding: 15px 20px; margin-bottom: 25px; }
+        .page-daily-work h4 { margin: 0 0 15px 0; color: #b45309; font-size: 0.9rem; text-transform: uppercase;}
         
-        .ticker-table { width: 100%; border-collapse: collapse; }
-        .ticker-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px dashed #fde68a; }
+        .ticker-table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+        .ticker-row { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px dashed #fef3c7; }
         .ticker-row:last-child { border-bottom: none; }
         
         .task-label { flex: 2; font-weight: 600; font-size: 0.85rem; color: #1f2937; }
@@ -311,19 +395,18 @@
         .ticker-cell .no-task-cross { font-size: 0.85rem; color: #9ca3af; font-weight: bold; height: 16px; line-height: 16px; }
         .ticker-cell input[type="checkbox"] { width: 16px; height: 16px; accent-color: #b45309; cursor: pointer; }
 
-        /* Tasks Grid */
-        .tasks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 15px; }
-        .day-box { background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 12px; transition: all 0.2s ease; }
-        .day-box.sunday { background: #fef2f2; border-color: #fca5a5; }
-        .day-box h5 { margin: 0 0 10px 0; font-size: 0.9rem; color: var(--primary); border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .day-box.sunday h5 { color: var(--danger); border-bottom-color: #fca5a5; }
-        .sunday-tag { font-size: 0.65rem; color: var(--danger); font-weight: bold; }
+        .tasks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+        .day-box { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; position: relative; transition: all 0.3s ease; }
+        .day-box.sunday { background: #fef2f2; border-color: #fee2e2; }
+        .day-box h5 { margin: 0 0 10px 0; font-size: 0.95rem; color: var(--primary); border-bottom: 1px solid #e5e7eb; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .day-box.sunday h5 { color: #dc2626; }
+        .sunday-tag { font-size: 0.65rem; color: #dc2626; font-weight: bold; }
 
-        .day-box.today-highlight { border: 2.5px solid var(--success) !important; background: #f0fdf4 !important; }
-        .today-badge { background: var(--success); color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .day-box.today-highlight { border: 2.5px solid #10b981 !important; background: #f0fdf4 !important; }
+        .today-badge { background: #10b981; color: white; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
 
         .task-list { list-style: none; padding: 0; margin: 0; }
-        .task-item { display: flex; align-items: flex-start; margin-bottom: 8px; cursor: pointer; font-size: 0.83rem; line-height: 1.3; }
+        .task-item { display: flex; align-items: flex-start; margin-bottom: 8px; cursor: pointer; font-size: 0.85rem; line-height: 1.3; }
         .task-item input[type="checkbox"] { margin-right: 6px; margin-top: 2px; width: 14px; height: 14px; accent-color: var(--primary); cursor: pointer; }
         .task-text { flex: 1; }
         .completed .task-text { text-decoration: line-through; color: #9ca3af; }
@@ -331,13 +414,24 @@
 </head>
 <body>
 
+<div id="mode-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-box">
+        <h3>🎯 Choose Planner Mode</h3>
+        <p>Aap is planner ko kaise chalana chahte hain? Choose karein:</p>
+        <div class="modal-btns">
+            <button class="mode-btn btn-cloud" onclick="selectPlannerMode('cloud')">☁️ Cloud Sync (Laptop + Mobile Sync)</button>
+            <button class="mode-btn btn-offline" onclick="selectPlannerMode('offline')">📱 Offline Mode (Single Device Only)</button>
+        </div>
+    </div>
+</div>
+
 <div class="main-wrapper">
     
     <!-- 👈 LEFT SIDEBAR -->
     <div class="left-sidebar">
         <header>
             <h1>CDS PLANNER</h1>
-            <p>Prepometer Target Dashboard</p>
+            <p>Smart Focus Dashboard</p>
         </header>
         <div class="todays-dashboard-box">
             <h3 id="todays-dashboard-title">🎯 TODAY'S FOCUS TASKS</h3>
@@ -345,12 +439,23 @@
         </div>
         <div class="workspace-card">
             <span class="workspace-title">📝 Quick Sticky Notes</span>
-            <textarea id="sticky-notes-area" class="sticky-textarea" placeholder="Important formulas, key dates, or notes yahan add karein..."></textarea>
+            <textarea id="sticky-notes-area" class="sticky-textarea" placeholder="Pure din ka koi bhi important formula, criteria yahan short mein note karein..."></textarea>
         </div>
     </div>
 
     <!-- 🏛️ CENTER CONTENT -->
     <div class="center-content">
+        <div class="cloud-status-bar">
+            <div class="status-info">
+                <span id="sync-dot" class="status-dot"></span>
+                <span id="sync-status-text">Checking Configuration...</span>
+            </div>
+            <div class="action-btns-container">
+                <button id="reset-link-btn" class="reset-url-btn" onclick="askForNewLink()" style="display: none;">🔄 Update Apps Script Link</button>
+                <button class="reset-url-btn" onclick="changeAppModeDirectly()">⚙️ Switch Mode</button>
+            </div>
+        </div>
+
         <div class="selector-box">
             <div class="selector-controls">
                 <label for="block-select">🎯 Select Study Block:</label>
@@ -369,7 +474,7 @@
     <div class="right-sidebar">
         <div class="workspace-card backlog-border">
             <span class="workspace-title">⚠️ Auto-Backlog Corner</span>
-            <small style="color: #6b7280; font-size: 0.75rem; margin-top: -4px;">(Past days ke pending tasks yahan automatic track hote hain)</small>
+            <small style="color: #6b7280; font-size: 0.75rem; margin-top: -5px;">(Past days ke jo tasks chhut gaye, yahan automatically add ho chuke hain)</small>
             <ul id="backlog-list-container" class="backlog-list"></ul>
         </div>
     </div>
@@ -377,29 +482,76 @@
 </div>
 
 <script>
-    // 📌 PREPOMETER SCHEDULE DATA (25 JULY - 13 AUG)
-    const scheduleData = [
-        { date: "25 JULY", tasks: ["English: Homonyms + Tense Based Error", "GS: India & Its Location + Himalayas", "Smiling Buddha: January Smiling Buddha", "Revision: Climatology + Tense"] },
-        { date: "26 JULY", tasks: ["English & GS: Sunday (Rest / Backlog)", "Smiling Buddha: January Smiling Buddha", "Revision: Climatology + Tense"] },
-        { date: "27 JULY", tasks: ["English: Parts of Speech + Vocab", "GS: Mountain Passes + Northern Plain", "Smiling Buddha: January Smiling Buddha", "Revision: Climatology + Tense"] },
-        { date: "28 JULY", tasks: ["English: Correlating Sentence + Fixed Preposition", "GS: Peninsular Plateau", "Smiling Buddha: February Smiling Buddha", "Revision: Oceanography + Preposition"] },
-        { date: "29 JULY", tasks: ["English: Phrasal Verb + Vocab + PQRS", "GS: Drainage System", "Smiling Buddha: February Smiling Buddha", "Revision: Oceanography + Preposition"] },
-        { date: "30 JULY", tasks: ["English: S1–S6 + Preposition Based Fill-ups", "GS: Soil", "Smiling Buddha: March Smiling Buddha", "Revision: Interior of the Earth + Earthquake + Volcanoes + Voice"] },
-        { date: "31 JULY", tasks: ["English: Foreign Words + Active & Passive Voice Practice", "GS: Indian Climate", "Smiling Buddha: March Smiling Buddha", "Revision: Interior of the Earth + Earthquake + Volcanoes + Voice"] },
-        { date: "1 AUG", tasks: ["English: Homonyms + Previous Year Error Practice", "GS: Crops", "Smiling Buddha: April Smiling Buddha", "Revision: Rocks + Geomorphic Processes + Noun"] },
-        { date: "2 AUG", tasks: ["English & GS: Sunday (Rest / Backlog)"] },
-        { date: "3 AUG", tasks: ["English: Idioms & Phrases + S1–S2 + Passage", "GS: Vegetation of India", "Smiling Buddha: May Smiling Buddha", "Revision: Landforms + Pronoun"] },
-        { date: "4 AUG", tasks: ["English: Parts of Speech + PQRS + Vocab", "GS: Köppen's Climate Classification", "Smiling Buddha: May Smiling Buddha", "Revision: Landforms + Pronoun"] },
-        { date: "5 AUG", tasks: ["English: Grammar Based Fill-up + Phrasal Verb", "GS: Units & Measurements", "Smiling Buddha: June Smiling Buddha", "Revision: Preamble + FR + DPSP + FDs + Verb + SVA"] },
-        { date: "6 AUG", tasks: ["English: Cloze Test + Vocab + S1–S6", "GS: Force, Work, Energy & Power", "Smiling Buddha: June Smiling Buddha", "Revision: Preamble + FR + DPSP + FDs + Verb + SVA"] },
-        { date: "7 AUG", tasks: ["English: Idioms & Phrases + Passage Practice", "GS: Optics", "Smiling Buddha: April Smiling Buddha (Revision)", "Revision: President, VP, PM, CM, Governor + Adverb"] },
-        { date: "8 AUG", tasks: ["English: Foreign Words + Error Practice", "GS: Sound", "Smiling Buddha: April Smiling Buddha (Revision)", "Revision: President, VP, PM, CM, Governor + Adverb"] },
-        { date: "9 AUG", tasks: ["English & GS: Sunday (Rest / Backlog)"] },
-        { date: "10 AUG", tasks: ["English: Homonyms + S1–S2 + Vocab", "GS: Current Electricity", "Smiling Buddha: May Smiling Buddha (Revision)", "Revision: Parliament + Adjective"] },
-        { date: "11 AUG", tasks: ["English: Preposition + Determiner Based Fill-up + S1–S6", "GS: Magnetism", "Smiling Buddha: May Smiling Buddha (Revision)", "Revision: Parliament + Adjective"] },
-        { date: "12 AUG", tasks: ["English: Cloze Test + Idioms & Phrases + PQRS", "GS: Motion", "Smiling Buddha: June Smiling Buddha (Revision)", "Revision: Supreme Court + High Court + Question Tag"] },
-        { date: "13 AUG", tasks: ["English: Parts of Speech + Foreign Words + Vocab", "GS: Gravitation", "Smiling Buddha: June Smiling Buddha (Revision)", "Revision: Constitutional & Non-Constitutional Bodies + Conjunction"] }
-    ];
+    let APP_MODE = localStorage.getItem('planner_app_mode') || ''; 
+    let SCRIPT_URL = localStorage.getItem('google_sheet_sync_url') || '';
+
+    function initModeSystem() {
+        if (!APP_MODE) {
+            document.getElementById('mode-modal').style.display = 'flex';
+        } else {
+            setupModeUI();
+        }
+    }
+
+    function selectPlannerMode(mode) {
+        localStorage.setItem('planner_app_mode', mode);
+        APP_MODE = mode;
+        document.getElementById('mode-modal').style.display = 'none';
+        
+        if (mode === 'cloud') {
+            askForNewLink();
+        } else {
+            setupModeUI();
+        }
+    }
+
+    function askForNewLink() {
+        let url = prompt("https://script.google.com/macros/s/AKfycbzFsThJMnPB8MDSETp4TU9pYToBGQYzz-WdDIqjgfP3bzHINkqVMq_EyjGMTQk2-DLHSw/exec");
+        if (url) {
+            localStorage.setItem('google_sheet_sync_url', url.trim());
+            SCRIPT_URL = url.trim();
+        } else if (!SCRIPT_URL) {
+            localStorage.setItem('planner_app_mode', 'offline');
+            APP_MODE = 'offline';
+        }
+        window.location.reload();
+    }
+
+    function changeAppModeDirectly() {
+        localStorage.removeItem('planner_app_mode');
+        window.location.reload();
+    }
+
+    function setupModeUI() {
+        if (APP_MODE === 'offline') {
+            document.getElementById('sync-dot').className = "status-dot offline-dot";
+            document.getElementById('sync-status-text').innerText = "📱 Offline Mode Active";
+            document.getElementById('reset-link-btn').style.display = 'none';
+            loadWorkspaceDataLocally();
+        } else {
+            document.getElementById('reset-link-btn').style.display = 'inline-block';
+            if (!SCRIPT_URL) {
+                document.getElementById('sync-status-text').innerText = "🔴 Cloud URL Required.";
+                loadWorkspaceDataLocally();
+            } else {
+                loadFromCloud();
+            }
+        }
+    }
+
+    const stickyTextArea = document.getElementById('sticky-notes-area');
+    stickyTextArea.addEventListener('input', function() {
+        const textValue = this.value;
+        localStorage.setItem('workspace_sticky_notes', textValue);
+        if(APP_MODE === 'cloud' && SCRIPT_URL) {
+            saveToCloud('workspace_sticky_notes', textValue);
+        }
+    });
+
+    function loadWorkspaceDataLocally() {
+        stickyTextArea.value = localStorage.getItem('workspace_sticky_notes') || '';
+        autoScanAndRenderBacklogs();
+    }
 
     const dailyEssentials = [
         "BOOK READING",
@@ -410,42 +562,65 @@
         "DIARY WRITING"
     ];
 
-    // Helper: Sunday Detection (Year 2026 Context)
-    function checkIfSunday(dateStr) {
-        const monthsMap = { "JULY": 6, "AUG": 7 };
+const scheduleData = [
+    { date: "25 JULY", tasks: ["English Target: Homonyms + Tense Based Error", "GS Target: India & Its Location + Himalayas", "Smiling Buddha Revision: January Smiling Buddha", "Revision Target: Climatology + Tense"] },
+    { date: "26 JULY", tasks: ["English & GS Target: Sunday (Rest / Backlog)", "Smiling Buddha Revision: January Smiling Buddha", "Revision Target: Climatology + Tense"] },
+    { date: "27 JULY", tasks: ["English Target: Parts of Speech + Vocab", "GS Target: Mountain Passes + Northern Plain", "Smiling Buddha Revision: January Smiling Buddha", "Revision Target: Climatology + Tense"] },
+    { date: "28 JULY", tasks: ["English Target: Correlating Sentence + Fixed Preposition", "GS Target: Peninsular Plateau", "Smiling Buddha Revision: February Smiling Buddha", "Revision Target: Oceanography + Preposition"] },
+    { date: "29 JULY", tasks: ["English Target: Phrasal Verb + Vocab + PQRS", "GS Target: Drainage System", "Smiling Buddha Revision: February Smiling Buddha", "Revision Target: Oceanography + Preposition"] },
+    { date: "30 JULY", tasks: ["English Target: S1–S6 + Preposition Based Fill-ups", "GS Target: Soil", "Smiling Buddha Revision: March Smiling Buddha", "Revision Target: Interior of the Earth + Earthquake + Volcanoes + Voice"] },
+    { date: "31 JULY", tasks: ["English Target: Foreign Words + Active & Passive Voice Practice", "GS Target: Indian Climate", "Smiling Buddha Revision: March Smiling Buddha", "Revision Target: Interior of the Earth + Earthquake + Volcanoes + Voice"] },
+    { date: "1 AUG", tasks: ["English Target: Homonyms + Previous Year Error Practice", "GS Target: Crops", "Smiling Buddha Revision: April Smiling Buddha", "Revision Target: Rocks + Geomorphic Processes + Noun"] },
+    { date: "2 AUG", tasks: ["English & GS Target: Sunday (Rest / Backlog)"] },
+    { date: "3 AUG", tasks: ["English Target: Idioms & Phrases + S1–S2 + Passage", "GS Target: Vegetation of India", "Smiling Buddha Revision: May Smiling Buddha", "Revision Target: Landforms + Pronoun"] },
+    { date: "4 AUG", tasks: ["English Target: Parts of Speech + PQRS + Vocab", "GS Target: Köppen's Climate Classification", "Smiling Buddha Revision: May Smiling Buddha", "Revision Target: Landforms + Pronoun"] },
+    { date: "5 AUG", tasks: ["English Target: Grammar Based Fill-up + Phrasal Verb", "GS Target: Units & Measurements", "Smiling Buddha Revision: June Smiling Buddha", "Revision Target: Preamble + FR + DPSP + FDs + Verb + SVA"] },
+    { date: "6 AUG", tasks: ["English Target: Cloze Test + Vocab + S1–S6", "GS Target: Force, Work, Energy & Power", "Smiling Buddha Revision: June Smiling Buddha", "Revision Target: Preamble + FR + DPSP + FDs + Verb + SVA"] },
+    { date: "7 AUG", tasks: ["English Target: Idioms & Phrases + Passage Practice", "GS Target: Optics", "Smiling Buddha Revision: April Smiling Buddha (Revision)", "Revision Target: President, VP, PM, CM, Governor + Adverb"] },
+    { date: "8 AUG", tasks: ["English Target: Foreign Words + Error Practice", "GS Target: Sound", "Smiling Buddha Revision: April Smiling Buddha (Revision)", "Revision Target: President, VP, PM, CM, Governor + Adverb"] },
+    { date: "9 AUG", tasks: ["English & GS Target: Sunday (Rest / Backlog)"] },
+    { date: "10 AUG", tasks: ["English Target: Homonyms + S1–S2 + Vocab", "GS Target: Current Electricity", "Smiling Buddha Revision: May Smiling Buddha (Revision)", "Revision Target: Parliament + Adjective"] },
+    { date: "11 AUG", tasks: ["English Target: Preposition + Determiner Based Fill-up + S1–S6", "GS Target: Magnetism", "Smiling Buddha Revision: May Smiling Buddha (Revision)", "Revision Target: Parliament + Adjective"] },
+    { date: "12 AUG", tasks: ["English Target: Cloze Test + Idioms & Phrases + PQRS", "GS Target: Motion", "Smiling Buddha Revision: June Smiling Buddha (Revision)", "Revision Target: Supreme Court + High Court + Question Tag"] },
+    { date: "13 AUG", tasks: ["English Target: Parts of Speech + Foreign Words + Vocab", "GS Target: Gravitation", "Smiling Buddha Revision: June Smiling Buddha (Revision)", "Revision Target: Constitutional & Non-Constitutional Bodies + Conjunction"] }
+];
+
+    // 🧠 SMART REAL-TIME CALENDAR CALCULATION MODULE (2026 BASED)
+    function checkIfSundayRealCalendar(dateStr) {
+        const monthsMap = { "MAY": 4, "JUNE": 5, "JULY": 6 }; // 0-indexed months
         const parts = dateStr.trim().toUpperCase().split(" ");
         if (parts.length < 2) return false;
+        
         const dayNum = parseInt(parts[0]);
         const monthIndex = monthsMap[parts[1]];
+        
         if (isNaN(dayNum) || monthIndex === undefined) return false;
+        
+        // Year sets to 2026 based on calendar timeline
         const targetDate = new Date(2026, monthIndex, dayNum);
-        return targetDate.getDay() === 0;
+        return targetDate.getDay() === 0; // 0 means Sunday in JS Engine
     }
 
+    // Assign dynamically detected Sunday properties
     scheduleData.forEach(day => {
-        day.isSunday = checkIfSunday(day.date);
+        day.isSunday = checkIfSundayRealCalendar(day.date);
     });
 
-    // Sticky Notes Local Saving
-    const stickyTextArea = document.getElementById('sticky-notes-area');
-    stickyTextArea.value = localStorage.getItem('prepometer_sticky_notes') || '';
-    stickyTextArea.addEventListener('input', function() {
-        localStorage.setItem('prepometer_sticky_notes', this.value);
-    });
-
-    // Today Date Setup
     const months = ["JAN", "FEB", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUG", "SEPT", "OCT", "NOV", "DEC"];
     const d = new Date();
-    const todayFormatted = `${d.getDate()} ${months[d.getMonth()]}`;
+    const currentDayNum = d.getDate();
+    const currentMonthStr = months[d.getMonth()];
+    const todayFormatted = `${currentDayNum} ${currentMonthStr}`;
 
     document.getElementById('todays-dashboard-title').innerHTML = `🎯 TODAY'S FOCUS (${todayFormatted})`;
 
     let detectedBlockId = "block-1";
     let todaysTasksArray = [];
+    let todaysDateStringSafe = "";
     let todayIndexInSchedule = -1;
 
     scheduleData.forEach((day, index) => {
-        if (day.date.trim().toUpperCase() === todayFormatted.trim().toUpperCase()) {
+        if(day.date.trim().toUpperCase() === todayFormatted.trim().toUpperCase()) {
             todayIndexInSchedule = index;
         }
     });
@@ -458,7 +633,6 @@
     const itemsPerGroup = 8;
     const totalBlocks = Math.ceil(scheduleData.length / itemsPerGroup);
 
-    // Build Selector Options
     for(let b = 1; b <= totalBlocks; b++) {
         const option = document.createElement('option');
         option.value = `block-${b}`;
@@ -466,7 +640,6 @@
         selectMenu.appendChild(option);
     }
 
-    // Build Blocks Layout
     for (let i = 0; i < scheduleData.length; i += itemsPerGroup) {
         const currentGroup = scheduleData.slice(i, i + itemsPerGroup);
         const groupIndex = Math.floor(i / itemsPerGroup) + 1;
@@ -478,8 +651,8 @@
 
         let pageHeaderHtml = `
             <div class="page-header">
-                <div class="page-title">📅 CDS PREPOMETER SCHEDULE</div>
-                <div class="pdf-tag">BLOCK GROUP ${groupIndex}</div>
+                <div class="page-title">📅 STUDY SCHEDULE PLANNER</div>
+                <div class="pdf-tag">GROUP BLOCK ${groupIndex}</div>
             </div>
             <div class="block-progress-wrapper">
                 <div class="progress-meta">
@@ -494,7 +667,7 @@
 
         let dailyWorkHtml = `
             <div class="page-daily-work">
-                <h4>☑ DAILY WORK (CONTINUOUS TRACKING COLUMNS)</h4>
+                <h4>☑ DAILY WORK (Continuous Tracking Columns)</h4>
                 <div class="ticker-table">
         `;
 
@@ -514,241 +687,281 @@
                     dailyWorkHtml += `<div class="ticker-cell"><span>D${absoluteDay}</span>`;
                     
                     if (isSunday && isKhelgharOrDrr) {
-                        dailyWorkHtml += `<span class="no-task-cross" title="No Quiz/DRR on Sunday">—</span>`;
+                        dailyWorkHtml += `<span class="no-task-cross">—</span>`;
                     } else {
-                        const checkId = `essential_b${groupIndex}_d${absoluteDay}_e${essentialIdx}`;
-                        dailyWorkHtml += `<input type="checkbox" id="${checkId}" onchange="handleTaskChange('${checkId}')">`;
+                        const storageKey = `daily_g${groupIndex}_e${essentialIdx}_d${absoluteDay}`;
+                        const isChecked = localStorage.getItem(storageKey) === 'true';
+                        dailyWorkHtml += `
+                            <input type="checkbox" class="sync-checkbox daily-work-cb" data-block="block-${groupIndex}" data-key="${storageKey}" ${isChecked ? 'checked' : ''}>
+                        `;
                     }
                     dailyWorkHtml += `</div>`;
                 }
             }
-            dailyWorkHtml += `
-                    </div>
-                </div>
-            `;
+            dailyWorkHtml += `</div></div>`;
         });
+        dailyWorkHtml += `</div></div>`;
 
-        dailyWorkHtml += `
-                </div>
-            </div>
-        `;
-
-        let tasksGridHtml = `<div class="tasks-grid">`;
-
-        currentGroup.forEach((dayData, dayIdxInGroup) => {
-            const absoluteDayNumber = startDayCount + dayIdxInGroup;
-            const isToday = (dayData.date.trim().toUpperCase() === todayFormatted.trim().toUpperCase());
-            const sundayClass = dayData.isSunday ? 'sunday' : '';
-            const todayClass = isToday ? 'today-highlight' : '';
-
+        let gridHtml = `<div class="tasks-grid">`;
+        currentGroup.forEach((day, dayIndex) => {
+            const absoluteDayNumber = startDayCount + dayIndex;
+            const safeDateStr = day.date.replace(/\s+/g, '_');
+            const isToday = (day.date.trim().toUpperCase() === todayFormatted.trim().toUpperCase());
+            
             if (isToday) {
                 detectedBlockId = `block-${groupIndex}`;
-                todaysTasksArray = dayData.tasks;
+                todaysTasksArray = day.tasks;
+                todaysDateStringSafe = safeDateStr;
             }
 
-            tasksGridHtml += `
-                <div class="day-box ${sundayClass} ${todayClass}">
-                    <h5>
-                        <span>[D${absoluteDayNumber}] ${dayData.date}</span>
-                        ${dayData.isSunday ? '<span class="sunday-tag">SUNDAY</span>' : ''}
-                        ${isToday ? '<span class="today-badge">TODAY</span>' : ''}
-                    </h5>
+            const isSundayClass = day.isSunday ? 'sunday' : '';
+            const isTodayClass = isToday ? 'today-highlight' : '';
+            const sundayTagHtml = day.isSunday ? '<span class="sunday-tag">SUNDAY</span>' : '';
+            const todayBadgeHtml = isToday ? '<span class="today-badge">TODAY</span>' : '';
+
+            gridHtml += `
+                <div class="day-box ${isSundayClass} ${isTodayClass}">
+                    <h5>[D${absoluteDayNumber}] ${day.date} ${sundayTagHtml} ${todayBadgeHtml}</h5>
                     <ul class="task-list">
             `;
 
-            dayData.tasks.forEach((task, taskIdx) => {
-                const taskId = `task_d${absoluteDayNumber}_t${taskIdx}`;
-                tasksGridHtml += `
-                    <li class="task-item" id="item_${taskId}">
-                        <input type="checkbox" id="${taskId}" onchange="handleTaskChange('${taskId}')">
-                        <label for="${taskId}" class="task-text">${task}</label>
+            day.tasks.forEach((task, taskIdx) => {
+                const storageKey = `task_${safeDateStr}_${taskIdx}`;
+                const isChecked = localStorage.getItem(storageKey) === 'true';
+                gridHtml += `
+                    <li class="task-item ${isChecked ? 'completed' : ''}" id="main-item-${safeDateStr}-${taskIdx}">
+                        <input type="checkbox" class="sync-checkbox date-task-cb" data-block="block-${groupIndex}" data-main-id="${safeDateStr}-${taskIdx}" data-key="${storageKey}" ${isChecked ? 'checked' : ''}>
+                        <span class="task-text">${task}</span>
                     </li>
                 `;
             });
-
-            tasksGridHtml += `
-                    </ul>
-                </div>
-            `;
+            gridHtml += `</ul></div>`;
         });
+        gridHtml += `</div>`;
 
-        tasksGridHtml += `</div>`;
-
-        pageBlock.innerHTML = pageHeaderHtml + dailyWorkHtml + tasksGridHtml;
+        pageBlock.innerHTML = pageHeaderHtml + dailyWorkHtml + gridHtml;
         container.appendChild(pageBlock);
     }
 
-    function renderTodaysFocusDashboard() {
-        const todayContainer = document.getElementById('todays-task-container');
-        todayContainer.innerHTML = '';
-
-        if (todayIndexInSchedule === -1 || !todaysTasksArray || todaysTasksArray.length === 0) {
-            todayContainer.innerHTML = `<li class="no-tasks-msg">🎉 Aaj ke liye koi specific main tasks scheduled nahi hain ya rest day hai!</li>`;
-            return;
-        }
-
-        const absoluteDayNum = todayIndexInSchedule + 1;
-
-        todaysTasksArray.forEach((taskText, taskIdx) => {
-            const originalTaskId = `task_d${absoluteDayNum}_t${taskIdx}`;
-            const isChecked = localStorage.getItem(originalTaskId) === 'true';
-
-            const li = document.createElement('li');
-            li.className = 'todays-task-item';
-            if(isChecked) {
-                li.style.textDecoration = 'line-through';
-                li.style.opacity = '0.6';
-            }
-
-            li.innerHTML = `
-                <input type="checkbox" id="today_dash_${originalTaskId}" ${isChecked ? 'checked' : ''} onchange="syncTodaysTaskClick('${originalTaskId}', this.checked)">
-                <span>${taskText}</span>
-            `;
-            todayContainer.appendChild(li);
-        });
-    }
-
-    function syncTodaysTaskClick(originalTaskId, isChecked) {
-        const mainCheckbox = document.getElementById(originalTaskId);
-        if(mainCheckbox) {
-            mainCheckbox.checked = isChecked;
-            handleTaskChange(originalTaskId);
-        } else {
-            localStorage.setItem(originalTaskId, isChecked);
-            renderTodaysFocusDashboard();
-            calculateAllBlockProgress();
-            autoScanAndRenderBacklogs();
-        }
-    }
-
-    function showBlock(blockId) {
-        document.querySelectorAll('.pdf-page-block').forEach(block => {
-            block.style.display = 'none';
-        });
-        const activeBlock = document.getElementById(blockId);
-        if (activeBlock) {
-            activeBlock.style.display = 'block';
-            selectMenu.value = blockId;
-        }
-        updateNavButtons();
-    }
-
-    function updateNavButtons() {
-        const currentIndex = Array.from(selectMenu.options).findIndex(opt => opt.value === selectMenu.value);
-        prevBtn.disabled = (currentIndex === 0);
-        nextBtn.disabled = (currentIndex === selectMenu.options.length - 1);
-    }
-
-    selectMenu.addEventListener('change', (e) => showBlock(e.target.value));
-
-    prevBtn.addEventListener('click', () => {
-        const currentIndex = Array.from(selectMenu.options).findIndex(opt => opt.value === selectMenu.value);
-        if (currentIndex > 0) showBlock(selectMenu.options[currentIndex - 1].value);
-    });
-
-    nextBtn.addEventListener('click', () => {
-        const currentIndex = Array.from(selectMenu.options).findIndex(opt => opt.value === selectMenu.value);
-        if (currentIndex < selectMenu.options.length - 1) showBlock(selectMenu.options[currentIndex + 1].value);
-    });
-
-    function handleTaskChange(id) {
-        const checkbox = document.getElementById(id);
-        if (!checkbox) return;
-        const isChecked = checkbox.checked;
-        
-        localStorage.setItem(id, isChecked);
-
-        const taskItem = document.getElementById(`item_${id}`);
-        if (taskItem) {
-            if (isChecked) taskItem.classList.add('completed');
-            else taskItem.classList.remove('completed');
-        }
-
-        calculateAllBlockProgress();
-        renderTodaysFocusDashboard();
-        autoScanAndRenderBacklogs();
-    }
-
-    function calculateAllBlockProgress() {
-        for (let b = 1; b <= totalBlocks; b++) {
-            const blockElem = document.getElementById(`block-${b}`);
-            if (!blockElem) continue;
-
-            const allCheckboxes = blockElem.querySelectorAll('input[type="checkbox"]');
-            let total = allCheckboxes.length;
-            let checkedCount = 0;
-
-            allCheckboxes.forEach(cb => {
-                if (cb.checked) checkedCount++;
-            });
-
-            const percent = total > 0 ? Math.round((checkedCount / total) * 100) : 0;
+    const dashboardContainer = document.getElementById('todays-task-container');
+    if (todaysTasksArray.length > 0) {
+        todaysTasksArray.forEach((task, taskIdx) => {
+            const storageKey = `task_${todaysDateStringSafe}_${taskIdx}`;
+            const isChecked = localStorage.getItem(storageKey) === 'true';
             
-            const percentLabel = document.getElementById(`progress-percent-block-${b}`);
-            const fillBar = document.getElementById(`progress-fill-block-${b}`);
+            dashboardContainer.innerHTML += `
+                <li class="todays-task-item ${isChecked ? 'completed' : ''}" id="dash-item-${todaysDateStringSafe}-${taskIdx}">
+                    <input type="checkbox" class="sync-checkbox date-task-cb" data-block="${detectedBlockId}" data-dash-id="${todaysDateStringSafe}-${taskIdx}" data-key="${storageKey}" ${isChecked ? 'checked' : ''}>
+                    <span class="task-text">${task}</span>
+                </li>
+            `;
+        });
+    } else {
+        dashboardContainer.innerHTML = `<p class="no-tasks-msg">🎉 No tasks scheduled for today.</p>`;
+    }
 
-            if (percentLabel) percentLabel.innerText = `${percent}%`;
-            if (fillBar) fillBar.style.width = `${percent}%`;
+    function updateBlockProgressBar(blockId) {
+        const blockElement = document.getElementById(blockId);
+        if (!blockElement) return;
+
+        const allDateCheckboxes = blockElement.querySelectorAll('.sync-checkbox.date-task-cb');
+        let totalCount = allDateCheckboxes.length;
+        let checkedCount = 0;
+
+        allDateCheckboxes.forEach(cb => {
+            if (cb.checked) checkedCount++;
+        });
+
+        const percentage = totalCount > 0 ? Math.round((checkedCount / totalCount) * 100) : 0;
+        
+        const textElement = document.getElementById(`progress-percent-${blockId}`);
+        const fillElement = document.getElementById(`progress-fill-${blockId}`);
+        
+        if (textElement) textElement.innerText = `${percentage}%`;
+        if (fillElement) fillElement.style.width = `${percentage}%`;
+    }
+
+    function calculateAllBlockProgressBars() {
+        for (let b = 1; b <= totalBlocks; b++) {
+            updateBlockProgressBar(`block-${b}`);
         }
     }
 
     function autoScanAndRenderBacklogs() {
         const backlogContainer = document.getElementById('backlog-list-container');
         backlogContainer.innerHTML = '';
+        
+        let limitIndex = todayIndexInSchedule !== -1 ? todayIndexInSchedule : scheduleData.length;
+        let backlogFoundCount = 0;
 
-        if (todayIndexInSchedule <= 0) {
-            backlogContainer.innerHTML = `<li style="color: #6b7280; font-size: 0.85rem; font-style: italic;">No pending backlogs! Great job! 🚀</li>`;
-            return;
-        }
-
-        let backlogCount = 0;
-
-        for (let i = 0; i < todayIndexInSchedule; i++) {
-            const pastDayData = scheduleData[i];
-            const pastDayNum = i + 1;
-
-            pastDayData.tasks.forEach((taskText, taskIdx) => {
-                const taskId = `task_d${pastDayNum}_t${taskIdx}`;
-                const isDone = localStorage.getItem(taskId) === 'true';
-
-                if (!isDone) {
-                    backlogCount++;
-                    const li = document.createElement('li');
-                    li.className = 'backlog-item';
-                    li.innerHTML = `
-                        <div>
-                            <strong>📅 ${pastDayData.date}:</strong> ${taskText}
-                        </div>
+        for (let i = 0; i < limitIndex; i++) {
+            const day = scheduleData[i];
+            const safeDateStr = day.date.replace(/\s+/g, '_');
+            
+            day.tasks.forEach((task, taskIdx) => {
+                const storageKey = `task_${safeDateStr}_${taskIdx}`;
+                const isChecked = localStorage.getItem(storageKey) === 'true';
+                
+                if (!isChecked) {
+                    backlogFoundCount++;
+                    backlogContainer.innerHTML += `
+                        <li class="backlog-item">
+                            <span>📅 <strong>${day.date}:</strong> ${task}</span>
+                        </li>
                     `;
-                    backlogContainer.appendChild(li);
                 }
             });
         }
 
-        if (backlogCount === 0) {
-            backlogContainer.innerHTML = `<li style="color: #10b981; font-weight: bold; font-size: 0.85rem;">🎉 Perfect! Past sabhi days ke tasks completed hain! Zero Backlogs!</li>`;
+        if (backlogFoundCount === 0) {
+            backlogContainer.innerHTML = `<li class="backlog-item" style="background:#f0fdf4; border-left-color:var(--success); color:#065f46;">🎉 Outstanding! Koi purana backlog nahi hai.</li>`;
         }
     }
 
-    function restoreLocalData() {
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            const isChecked = localStorage.getItem(checkbox.id) === 'true';
-            checkbox.checked = isChecked;
-            
-            const taskItem = document.getElementById(`item_${checkbox.id}`);
-            if (taskItem) {
-                if (isChecked) taskItem.classList.add('completed');
-                else taskItem.classList.remove('completed');
-            }
-        });
-        calculateAllBlockProgress();
-        renderTodaysFocusDashboard();
-        autoScanAndRenderBacklogs();
+    function showBlock(blockId) {
+        document.querySelectorAll('.pdf-page-block').forEach(block => { block.style.display = 'none'; });
+        const selectedBlock = document.getElementById(blockId);
+        if(selectedBlock) { selectedBlock.style.display = 'block'; }
+        selectMenu.value = blockId;
+        
+        const currentNum = parseInt(blockId.split('-')[1]);
+        prevBtn.disabled = (currentNum === 1);
+        nextBtn.disabled = (currentNum === totalBlocks);
+        
+        updateBlockProgressBar(blockId);
     }
 
-    // App Startup
-    showBlock(detectedBlockId);
-    restoreLocalData();
+    selectMenu.addEventListener('change', function() { showBlock(this.value); });
+    prevBtn.addEventListener('click', () => {
+        const currentBlock = selectMenu.value;
+        const currentNum = parseInt(currentBlock.split('-')[1]);
+        if (currentNum > 1) { showBlock(`block-${currentNum - 1}`); }
+    });
+    nextBtn.addEventListener('click', () => {
+        const currentBlock = selectMenu.value;
+        const currentNum = parseInt(currentBlock.split('-')[1]);
+        if (currentNum < totalBlocks) { showBlock(`block-${currentNum + 1}`); }
+    });
+
+    async function loadFromCloud() {
+        if (APP_MODE !== 'cloud' || !SCRIPT_URL) return;
+        document.getElementById('sync-status-text').innerText = "Real-time updates fetch ho rha hai...";
+        try {
+            const response = await fetch(SCRIPT_URL);
+            const cloudData = await response.json();
+            
+            Object.keys(cloudData).forEach(key => {
+                localStorage.setItem(key, cloudData[key]);
+                
+                if(key === 'workspace_sticky_notes') {
+                    stickyTextArea.value = cloudData[key];
+                    return;
+                }
+
+                const isChecked = (cloudData[key] === 'true' || cloudData[key] === true);
+                
+                document.querySelectorAll(`[data-key="${key}"]`).forEach(checkbox => {
+                    checkbox.checked = isChecked;
+                    const item = checkbox.parentElement;
+                    if(isChecked) item.classList.add('completed'); else item.classList.remove('completed');
+                });
+                
+                const dashId = checkboxAttributeExtractor(key);
+                if (dashId) { uiMirrorSync(dashId, isChecked); }
+            });
+            document.getElementById('sync-dot').className = "status-dot active";
+            document.getElementById('sync-status-text').innerText = "🟢 Live Sync Connected!";
+            calculateAllBlockProgressBars();
+            autoScanAndRenderBacklogs(); 
+        } catch (e) {
+            document.getElementById('sync-status-text').innerText = "🟡 Connection Failed (Using local storage)";
+            console.log("Sync Error: ", e);
+            loadWorkspaceDataLocally();
+        }
+    }
+
+    function checkboxAttributeExtractor(key) {
+        if (key.startsWith('task_')) return key.replace('task_', '');
+        return null;
+    }
+
+    function uiMirrorSync(id, isChecked) {
+        const itemDash = document.getElementById(`dash-item-${id}`);
+        const itemMain = document.getElementById(`main-item-${id}`);
+        if(isChecked) {
+            if(itemDash) itemDash.classList.add('completed');
+            if(itemMain) itemMain.classList.add('completed');
+        } else {
+            if(itemDash) itemDash.classList.remove('completed');
+            if(itemMain) itemMain.classList.remove('completed');
+        }
+    }
+
+    async function saveToCloud(key, value) {
+        if (APP_MODE !== 'cloud' || !SCRIPT_URL) return;
+        try {
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: key, value: value })
+            });
+        } catch (e) { console.log("Cloud Save Error:", e); }
+    }
+
+    document.querySelectorAll('.sync-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const key = this.getAttribute('data-key');
+            const isChecked = this.checked;
+            const targetBlockId = this.getAttribute('data-block');
+            
+            if(key) {
+                localStorage.setItem(key, isChecked);
+                if (APP_MODE === 'cloud') {
+                    saveToCloud(key, isChecked);
+                }
+            }
+
+            const dashId = this.getAttribute('data-dash-id');
+            if (dashId) {
+                const mainCheckbox = document.querySelector(`[data-main-id="${dashId}"]`);
+                if (mainCheckbox) mainCheckbox.checked = isChecked;
+                uiMirrorSync(dashId, isChecked);
+            }
+
+            const mainId = this.getAttribute('data-main-id');
+            if (mainId) {
+                const dashCheckbox = document.querySelector(`[data-dash-id="${mainId}"]`);
+                if (dashCheckbox) dashCheckbox.checked = isChecked;
+                uiMirrorSync(mainId, isChecked);
+            }
+            
+            if(!dashId && !mainId) {
+                const listItem = this.parentElement;
+                if (listItem.classList.contains('task-item') || listItem.classList.contains('ticker-cell')) {
+                    if (isChecked) listItem.classList.add('completed');
+                    else listItem.classList.remove('completed');
+                }
+            }
+
+            if(targetBlockId) {
+                updateBlockProgressBar(targetBlockId);
+            } else if (detectedBlockId) {
+                updateBlockProgressBar(detectedBlockId);
+            }
+
+            autoScanAndRenderBacklogs();
+        });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+        initModeSystem();
+        showBlock(detectedBlockId);
+        calculateAllBlockProgressBars();
+        if(APP_MODE === 'offline' || !SCRIPT_URL) {
+            loadWorkspaceDataLocally();
+        }
+    });
 </script>
 
 </body>
